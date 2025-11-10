@@ -1,0 +1,5 @@
+@api = http://localhost:3000
+
+### Register Anderson
+GET {{api}}/hello
+Content-Type: application/json

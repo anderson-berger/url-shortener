@@ -1,0 +1,24 @@
+{
+  "name": "@shortener/backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend serverless para URL Shortener",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "serverless",
+    "aws-lambda",
+    "url-shortener"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@serverless/typescript": "^4.23.0",
+    "@types/aws-lambda": "^8.10.157",
+    "serverless": "^4.23.0",
+    "serverless-offline": "^14.4.0"
+  }
+}
