@@ -9,6 +9,7 @@
     "packages/frontend"
   ],
   "scripts": {
+    "start:backend": "npm run start -w @shortener/backend",
     "install:all": "npm install",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist packages/*/.serverless"
   },

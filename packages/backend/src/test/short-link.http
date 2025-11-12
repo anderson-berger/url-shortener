@@ -1,0 +1,9 @@
+@api = http://localhost:3000
+
+### Criar novo link encurtado
+POST {{api}}/links
+Content-Type: application/json
+
+{
+  "originalUrl": "https://www.openai.com/research/gpt-5"
+}

@@ -15,9 +15,41 @@ const serverlessConfiguration: AWS = {
     environment: {
       STAGE: "${self:provider.stage}",
     },
+
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: "Allow",
+            Action: [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+            ],
+            Resource: "*",
+          },
+        ],
+      },
+    },
+
+    tags: {
+      Project: "url-shortener",
+      Environment: "${self:provider.stage}",
+    },
   },
 
   functions: {
+    createLink: {
+      handler: "src/handlers/short-link/create.handler",
+      events: [
+        {
+          httpApi: {
+            path: "/links",
+            method: "post",
+          },
+        },
+      ],
+    },
     hello: {
       handler: "src/handlers/hello.handler",
       events: [
