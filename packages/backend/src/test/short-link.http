@@ -1,9 +1,45 @@
-@api = http://localhost:3000
+@api_local = http://localhost:3000
+@api_dev =  https://v5zcdnldv9.execute-api.sa-east-1.amazonaws.com
 
-### Criar novo link encurtado
-POST {{api}}/links
+### Health Check
+GET {{api_local}}/hello
+
+### Criar novo link encurtado (local)
+POST {{api_local}}/links
+Content-Type: application/json
+
+{
+  "originalUrl": "https://www.openai.com/research/gpt-5",
+  "title": "GPT-5 Research"
+}
+
+### Criar link sem título (local)
+POST {{api_local}}/links
+Content-Type: application/json
+
+{
+  "originalUrl": "https://github.com/microsoft/typescript"
+}
+
+### Criar link com expiração (local)
+POST {{api_local}}/links
+Content-Type: application/json
+
+{
+  "originalUrl": "https://example.com/limited-offer",
+  "title": "Limited Offer",
+  "expiresAt": "2025-12-31T23:59:59Z"
+}
+
+### --- PRODUÇÃO (DEV) ---
+
+### Criar link (dev)
+POST {{api_dev}}/links
 Content-Type: application/json
 
 {
   "originalUrl": "https://www.openai.com/research/gpt-5"
 }
+
+### Health Check (dev)
+GET {{api_dev}}/hello

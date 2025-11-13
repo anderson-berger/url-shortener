@@ -1,17 +1,17 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { ShortLinkLinkController } from "@/controllers/ShortLinkLinkController";
-
+import { ShortLinkController } from "@/controllers/ShortLinkLink_Controller";
 import { $newShortLink } from "@shortener/shared/types/link";
 import { apiSuccess, apiError } from "@shortener/shared/response/response";
 
-const shortLinkLinkController = new ShortLinkLinkController();
+const shortLinkController = new ShortLinkController();
 
 export async function handler(
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
   try {
-    const newShortLink = $newShortLink.parse(JSON.parse(event.body || ""));
-    const result = await shortLinkLinkController.create(newShortLink);
+    const body = JSON.parse(event.body || "{}");
+    const newShortLink = $newShortLink.parse(body);
+    const result = await shortLinkController.create(newShortLink);
     return apiSuccess(result, 201);
   } catch (error) {
     return apiError(error);

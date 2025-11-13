@@ -16,6 +16,18 @@ export const apiSuccess = (
   body: JSON.stringify(data),
 });
 
+export const apiRedirect = (
+  location: string,
+  statusCode: 301 | 302 = 301
+): APIGatewayProxyResult => ({
+  statusCode,
+  headers: {
+    Location: location,
+    "Cache-Control": "no-cache",
+  },
+  body: "",
+});
+
 export const apiError = (error: unknown): APIGatewayProxyResult => {
   console.error("API Error:", error);
 

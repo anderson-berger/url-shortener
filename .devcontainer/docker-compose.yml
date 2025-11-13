@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   api:
     build:
@@ -7,6 +7,9 @@ services:
     container_name: url-shortener-api
     volumes:
       - ../:/workspace:cached
+
+    ports:
+      - "3000:3000"
     command: sleep infinity
     networks:
       - url-shortener-network
