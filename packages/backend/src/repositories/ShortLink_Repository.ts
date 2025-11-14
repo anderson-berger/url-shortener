@@ -2,7 +2,7 @@ import { docClient } from "@/config/dynamodb";
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { $shortLink, ShortLink } from "@shortener/shared/types/link";
 
-const LINKS_TABLE = process.env.LINKS_TABLE!;
+const TABLE = process.env.TABLE!;
 
 export class ShortLinkRepository {
   constructor() {}
@@ -18,7 +18,7 @@ export class ShortLinkRepository {
 
     await docClient.send(
       new PutCommand({
-        TableName: LINKS_TABLE,
+        TableName: TABLE,
         Item: item,
         ConditionExpression: "attribute_not_exists(pk)",
       })
@@ -29,7 +29,7 @@ export class ShortLinkRepository {
   async getByShortCode(shortCode: string): Promise<ShortLink | null> {
     const result = await docClient.send(
       new QueryCommand({
-        TableName: LINKS_TABLE,
+        TableName: TABLE,
         IndexName: "GSI1",
         KeyConditionExpression: "gsi1pk = :gsi1pk AND gsi1sk = :gsi1sk",
         ExpressionAttributeValues: {

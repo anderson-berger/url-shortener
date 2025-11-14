@@ -10,7 +10,6 @@ Content-Type: application/json
 
 {
   "originalUrl": "https://www.openai.com/research/gpt-5",
-  "title": "GPT-5 Research"
 }
 
 ### Criar link sem título (local)
