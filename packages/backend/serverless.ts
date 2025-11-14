@@ -40,7 +40,7 @@ const serverlessConfiguration: AWS = {
             ],
             Resource: [
               "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}",
-              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}/index/*", // ← ADICIONA ESTA LINHA
+              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}/index/*",
             ],
           },
         ],

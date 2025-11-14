@@ -20,7 +20,8 @@ export class ShortLinkRepository {
       new PutCommand({
         TableName: TABLE,
         Item: item,
-        ConditionExpression: "attribute_not_exists(pk)",
+        ConditionExpression:
+          "attribute_not_exists(pk) AND attribute_not_exists(gsi1pk)",
       })
     );
     return shortLink;
