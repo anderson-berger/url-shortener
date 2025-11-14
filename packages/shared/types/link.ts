@@ -13,7 +13,6 @@ export const $newShortLink = $shortLink.omit({
   id: true,
   version: true,
   shortCode: true,
-  clicks: true,
   createdAt: true,
   updatedAt: true,
 });

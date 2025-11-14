@@ -14,7 +14,7 @@ const serverlessConfiguration: AWS = {
 
     environment: {
       STAGE: "${self:provider.stage}",
-      LINKS_TABLE: "${self:service}-links-${self:provider.stage}",
+      TABLE: "${self:service}-${self:provider.stage}",
     },
 
     iam: {
@@ -39,8 +39,8 @@ const serverlessConfiguration: AWS = {
               "dynamodb:Query",
             ],
             Resource: [
-              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.LINKS_TABLE}",
-              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.LINKS_TABLE}/index/*", // ← ADICIONA ESTA LINHA
+              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}",
+              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}/index/*", // ← ADICIONA ESTA LINHA
             ],
           },
         ],
@@ -83,7 +83,7 @@ const serverlessConfiguration: AWS = {
       LinksTable: {
         Type: "AWS::DynamoDB::Table",
         Properties: {
-          TableName: "${self:provider.environment.LINKS_TABLE}",
+          TableName: "${self:provider.environment.TABLE}",
           BillingMode: "PAY_PER_REQUEST",
           AttributeDefinitions: [
             { AttributeName: "pk", AttributeType: "S" },

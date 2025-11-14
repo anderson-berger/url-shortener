@@ -23,8 +23,13 @@ export class ShortLinkService {
       createdAt: now,
       updatedAt: now,
     };
+    console.log("shortLink", shortLink);
+    const TABLE = process.env.TABLE!;
+    console.log("TABLE", TABLE);
 
     await this.shortLinkRepository.save(shortLink);
+    console.log("shortLink", shortLink);
+
     return shortLink;
   }
 
