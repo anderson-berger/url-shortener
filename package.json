@@ -4,7 +4,6 @@
   "private": true,
   "description": "URL Shortener with Analytics - Monorepo",
   "workspaces": [
-    "packages/shared",
     "packages/backend",
     "packages/frontend",
     "scripts"

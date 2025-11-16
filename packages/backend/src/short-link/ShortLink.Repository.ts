@@ -1,6 +1,6 @@
 import { docClient } from "@/config/dynamodb";
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { $shortLink, ShortLink } from "@shortener/shared/types/link";
+import { $shortLink, ShortLink } from "@/short-link/ShortLink.Schemas";
 
 const TABLE = process.env.TABLE!;
 

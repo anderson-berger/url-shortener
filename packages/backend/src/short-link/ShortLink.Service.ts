@@ -1,8 +1,8 @@
-import { ShortLinkRepository } from "@/repositories/ShortLink_Repository";
 import { generateShortCode } from "@/utils/shortcode.util";
-import { NewShortLink, ShortLink } from "@shortener/shared/types/link";
 import { randomUUID } from "crypto";
 import dayjs from "dayjs";
+import { ShortLinkRepository } from "@/short-link/ShortLink.Repository";
+import { NewShortLink, ShortLink } from "@/short-link/ShortLink.Schemas";
 
 export class ShortLinkService {
   private shortLinkRepository: ShortLinkRepository;
