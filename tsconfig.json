@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    /* Strict Type-Checking */
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -9,8 +8,6 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
-    /* Module Resolution */
     "module": "ES2022",
     "moduleResolution": "node",
     "target": "ES2022",
@@ -18,21 +15,17 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-
-    /* Emit */
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "removeComments": false,
     "importHelpers": false,
-
-    /* Advanced */
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    /* ADICIONAR ISTO */
+    "types": [],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    ".serverless"
-  ]
+  "exclude": ["node_modules", "dist", ".serverless"]
 }
