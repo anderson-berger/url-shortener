@@ -54,8 +54,8 @@ const serverlessConfiguration: AWS = {
   },
 
   functions: {
-    createLink: {
-      handler: "src/handlers/short-link/create.handler",
+    "short-link": {
+      handler: "src/short-link/handler.handler",
       events: [
         {
           httpApi: {
@@ -63,11 +63,6 @@ const serverlessConfiguration: AWS = {
             method: "post",
           },
         },
-      ],
-    },
-    redirect: {
-      handler: "src/handlers/short-link/redirect.handler",
-      events: [
         {
           httpApi: {
             path: "/{shortCode}",

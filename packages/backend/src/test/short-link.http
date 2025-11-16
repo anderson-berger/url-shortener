@@ -9,7 +9,7 @@ POST {{api_local}}/links
 Content-Type: application/json
 
 {
-  "originalUrl": "https://www.openai.com/research/gpt-5",
+  "originalUrl": "https://www.openai.com/research/gpt-5"
 }
 
 ### Criar link sem título (local)
