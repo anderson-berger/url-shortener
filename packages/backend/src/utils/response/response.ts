@@ -29,8 +29,6 @@ export const apiRedirect = (
 });
 
 export const apiError = (error: unknown): APIGatewayProxyResult => {
-  console.error("API Error:", error);
-
   // Erro de validação Zod
   if (error instanceof ZodError) {
     return {

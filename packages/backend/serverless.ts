@@ -13,8 +13,8 @@ const serverlessConfiguration: AWS = {
     stage: "${opt:stage, 'local'}",
 
     environment: {
-      STAGE: "${self:provider.stage}",
-      TABLE: "${self:service}-${self:provider.stage}",
+      STAGE: "${opt:stage, 'local'}",
+      TABLE: "${self:service}-${opt:stage, 'local'}",
     },
 
     iam: {
@@ -39,8 +39,9 @@ const serverlessConfiguration: AWS = {
               "dynamodb:Query",
             ],
             Resource: [
-              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}",
-              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}/index/*",
+              // evitar self:provider.environment.TABLE aqui também — usar opt:stage
+              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${opt:stage, 'local'}",
+              "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${opt:stage, 'local'}/index/*",
             ],
           },
         ],
@@ -54,18 +55,29 @@ const serverlessConfiguration: AWS = {
   },
 
   functions: {
+    "health-check": {
+      handler: "src/health-check/handler.handler",
+      events: [
+        {
+          httpApi: {
+            path: "/api/health",
+            method: "get",
+          },
+        },
+      ],
+    },
     "short-link": {
       handler: "src/short-link/handler.handler",
       events: [
         {
           httpApi: {
-            path: "/links",
+            path: "/api/links",
             method: "post",
           },
         },
         {
           httpApi: {
-            path: "/{shortCode}",
+            path: "/api/{shortCode}",
             method: "get",
           },
         },
@@ -112,5 +124,4 @@ const serverlessConfiguration: AWS = {
     },
   },
 };
-
-module.exports = serverlessConfiguration;
+export default serverlessConfiguration;

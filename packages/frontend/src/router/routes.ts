@@ -1,10 +1,21 @@
+// packages/frontend/src/router/routes.ts
+
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      {
+        path: '', // ← Rota vazia para index (OK)
+        component: () => import('pages/IndexPage.vue'),
+      },
+      {
+        path: '/health', // ← ADICIONAR "/" no início
+        component: () => import('pages/HealthCheckPage.vue'),
+      },
+    ],
   },
 
   // Always leave this as last one,

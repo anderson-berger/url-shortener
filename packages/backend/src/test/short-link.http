@@ -2,7 +2,7 @@
 @api_dev =  https://v5zcdnldv9.execute-api.sa-east-1.amazonaws.com
 
 ### Health Check
-GET {{api_local}}/hello
+GET {{api_local}}/health     
 
 ### Criar novo link encurtado (local)
 POST {{api_local}}/links
