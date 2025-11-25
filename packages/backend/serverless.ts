@@ -77,7 +77,36 @@ const serverlessConfiguration: AWS = {
         },
         {
           httpApi: {
-            path: "/api/{shortCode}",
+            path: "/api/links",
+            method: "get",
+          },
+        },
+        {
+          httpApi: {
+            path: "/api/links/{id}",
+            method: "get",
+          },
+        },
+        {
+          httpApi: {
+            path: "/api/links/{id}",
+            method: "put",
+          },
+        },
+        {
+          httpApi: {
+            path: "/api/links/{id}",
+            method: "delete",
+          },
+        },
+      ],
+    },
+    redirect: {
+      handler: "src/redirect/handler.handler",
+      events: [
+        {
+          httpApi: {
+            path: "/{shortCode}",
             method: "get",
           },
         },
@@ -97,6 +126,8 @@ const serverlessConfiguration: AWS = {
             { AttributeName: "sk", AttributeType: "S" },
             { AttributeName: "gsi1pk", AttributeType: "S" },
             { AttributeName: "gsi1sk", AttributeType: "S" },
+            { AttributeName: "gsi2pk", AttributeType: "S" },
+            { AttributeName: "gsi2sk", AttributeType: "S" },
           ],
           KeySchema: [
             { AttributeName: "pk", KeyType: "HASH" },
@@ -108,6 +139,14 @@ const serverlessConfiguration: AWS = {
               KeySchema: [
                 { AttributeName: "gsi1pk", KeyType: "HASH" },
                 { AttributeName: "gsi1sk", KeyType: "RANGE" },
+              ],
+              Projection: { ProjectionType: "ALL" },
+            },
+            {
+              IndexName: "GSI2",
+              KeySchema: [
+                { AttributeName: "gsi2pk", KeyType: "HASH" },
+                { AttributeName: "gsi2sk", KeyType: "RANGE" },
               ],
               Projection: { ProjectionType: "ALL" },
             },

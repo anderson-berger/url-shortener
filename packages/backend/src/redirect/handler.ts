@@ -11,7 +11,7 @@ export async function handler(
 ): Promise<APIGatewayProxyResult> {
   try {
     const method = event.requestContext.http.method;
-
+    return apiSuccess(method);
     switch (method) {
       case "POST":
         return await create(event);

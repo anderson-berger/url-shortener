@@ -30,8 +30,10 @@ async function ensureTable() {
     AttributeDefinitions: [
       { AttributeName: "pk", AttributeType: "S" },
       { AttributeName: "sk", AttributeType: "S" },
-      { AttributeName: "gsi1pk", AttributeType: "S" }, // Adicione
-      { AttributeName: "gsi1sk", AttributeType: "S" }, // Adicione
+      { AttributeName: "gsi1pk", AttributeType: "S" },
+      { AttributeName: "gsi1sk", AttributeType: "S" },
+      { AttributeName: "gsi2pk", AttributeType: "S" },
+      { AttributeName: "gsi2sk", AttributeType: "S" },
     ],
 
     KeySchema: [
@@ -46,6 +48,16 @@ async function ensureTable() {
         KeySchema: [
           { AttributeName: "gsi1pk", KeyType: "HASH" },
           { AttributeName: "gsi1sk", KeyType: "RANGE" },
+        ],
+        Projection: {
+          ProjectionType: "ALL", // Inclui todos os atributos
+        },
+      },
+      {
+        IndexName: "GSI2",
+        KeySchema: [
+          { AttributeName: "gsi2pk", KeyType: "HASH" },
+          { AttributeName: "gsi2sk", KeyType: "RANGE" },
         ],
         Projection: {
           ProjectionType: "ALL", // Inclui todos os atributos

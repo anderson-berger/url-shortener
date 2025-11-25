@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const $shortLink = z.object({
   id: z.uuid(),
@@ -17,11 +17,5 @@ export const $newShortLink = $shortLink.omit({
   updatedAt: true,
 });
 
-export const $pagination = z.object({
-  limit: z.coerce.number().int().positive().max(100).optional().default(20),
-  nextToken: z.string().optional(),
-});
-
 export type ShortLink = z.infer<typeof $shortLink>;
 export type NewShortLink = z.infer<typeof $newShortLink>;
-export type Pagination = z.infer<typeof $pagination>;

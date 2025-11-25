@@ -2,7 +2,11 @@ import { generateShortCode } from "@/utils/shortcode.util";
 import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 import { ShortLinkRepository } from "@/short-link/ShortLink.Repository";
-import { NewShortLink, ShortLink } from "@/short-link/ShortLink.Schemas";
+import {
+  NewShortLink,
+  Pagination,
+  ShortLink,
+} from "@/short-link/ShortLink.Schemas";
 
 export class ShortLinkService {
   private shortLinkRepository: ShortLinkRepository;
@@ -27,6 +31,19 @@ export class ShortLinkService {
     await this.shortLinkRepository.save(shortLink);
 
     return shortLink;
+  }
+
+  async getById(id: ShortLink["id"]) {
+    const shortlink = await this.shortLinkRepository.getById(id);
+    if (!shortlink) {
+      throw new Error("Link not found");
+    }
+    return shortlink;
+  }
+
+  async list(pagination: Pagination) {
+    const links = await this.shortLinkRepository.list(pagination);
+    return links;
   }
 
   async redirect(shortCode: ShortLink["shortCode"]) {

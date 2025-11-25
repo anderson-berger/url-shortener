@@ -4,6 +4,10 @@
   "private": true,
   "description": "Backend serverless para URL Shortener",
   "main": "dist/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    "./src/*": "./src/*.ts"
+  },
   "scripts": {
     "start": "serverless offline start --reloadHandler",
     "deploy:dev": "serverless deploy --stage dev --verbose",

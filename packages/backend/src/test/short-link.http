@@ -2,15 +2,23 @@
 @api_dev =  https://v5zcdnldv9.execute-api.sa-east-1.amazonaws.com
 
 ### Health Check
-GET {{api_local}}/health     
+GET {{api_local}}/api/health     
 
 ### Criar novo link encurtado (local)
-POST {{api_local}}/links
+POST {{api_local}}/api/links
 Content-Type: application/json
 
 {
   "originalUrl": "https://www.openai.com/research/gpt-5"
 }
+
+### GetById
+GET {{api_local}}/api/links/df0eba0f-ed1a-40d7-bcd5-f9958aeac9b8
+Content-Type: application/json  
+
+### List - com limit customizado
+GET {{api_local}}/api/links?limit=2&nextToken=eyJzayI6Ik1FVEFEQVRBIiwiZ3NpMnBrIjoiTElOSyIsInBrIjoiTElOSyM1YmM1MTcwMS03NmM0LTQ3Y2QtOWIzYi01ODAxZWVjOTNmZjQiLCJnc2kyc2siOiIyMDI1LTExLTI1VDAyOjQwOjA2LjA3MVoifQ==
+Content-Type: application/json
 
 ### Criar link sem título (local)
 POST {{api_local}}/links

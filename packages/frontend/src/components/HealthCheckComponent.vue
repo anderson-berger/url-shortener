@@ -72,7 +72,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import healthService from '../services/health.service';
+import healthService from 'src/services/health.service';
 import type { HealthCheckResponse } from '../services/health.service';
 
 export default defineComponent({
