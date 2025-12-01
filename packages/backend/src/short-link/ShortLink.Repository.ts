@@ -1,5 +1,5 @@
 import { docClient } from "@/config/dynamodb";
-import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import {
   $shortLink,
   Pagination,
@@ -28,6 +28,34 @@ export class ShortLinkRepository {
         Item: item,
         ConditionExpression:
           "attribute_not_exists(pk) AND attribute_not_exists(gsi1pk)",
+      })
+    );
+    return shortLink;
+  }
+
+  async update(shortLink: ShortLink) {
+    const item = {
+      pk: `LINK#${shortLink.id}`,
+      sk: "METADATA",
+      gsi1pk: `SHORTCODE#${shortLink.shortCode}`,
+      gsi1sk: "LINK",
+      gsi2pk: "LINK",
+      gsi2sk: shortLink.createdAt,
+      ...shortLink,
+    };
+
+    await docClient.send(
+      new PutCommand({
+        TableName: TABLE,
+        Item: item,
+        ConditionExpression:
+          "attribute_exists(pk) AND #version = :expectedVersion",
+        ExpressionAttributeNames: {
+          "#version": "version",
+        },
+        ExpressionAttributeValues: {
+          ":expectedVersion": shortLink.version - 1,
+        },
       })
     );
     return shortLink;
@@ -104,5 +132,25 @@ export class ShortLinkRepository {
     const item = result.Items[0];
     const shortLink = $shortLink.parse(item);
     return shortLink;
+  }
+
+  async delete(shortLink: ShortLink): Promise<void> {
+    await docClient.send(
+      new DeleteCommand({
+        TableName: TABLE,
+        Key: {
+          pk: `LINK#${shortLink.id}`,
+          sk: "METADATA",
+        },
+        ConditionExpression:
+          "attribute_exists(pk) AND #version = :expectedVersion",
+        ExpressionAttributeNames: {
+          "#version": "version",
+        },
+        ExpressionAttributeValues: {
+          ":expectedVersion": shortLink.version,
+        },
+      })
+    );
   }
 }

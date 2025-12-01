@@ -31,6 +31,7 @@
           :label="isEdit ? 'Atualizar' : 'Criar'"
           color="primary"
           :disable="!hasBeenModified"
+          :loading="isLoading"
         />
       </q-card-actions>
     </q-form>
@@ -43,6 +44,7 @@ import { defineComponent, type PropType } from 'vue';
 
 export default defineComponent({
   name: 'ShortLinkForm',
+  emits: ['submit', 'close'],
 
   props: {
     item: {
@@ -50,9 +52,6 @@ export default defineComponent({
       required: true,
     },
   },
-
-  emits: ['create', 'update', 'close'],
-
   data() {
     return {
       data: { ...this.item } as NewShortLink | ShortLink,
@@ -62,6 +61,9 @@ export default defineComponent({
   computed: {
     isEdit(): boolean {
       return 'id' in this.data;
+    },
+    isLoading() {
+      return this.$load.isLoading('create-link') || this.$load.isLoading('update-link');
     },
 
     hasBeenModified(): boolean {
@@ -80,13 +82,7 @@ export default defineComponent({
 
   methods: {
     handleSubmit() {
-      if (!this.hasBeenModified) return;
-
-      if (this.isEdit) {
-        this.$emit('update', this.data as ShortLink);
-      } else {
-        this.$emit('create', this.data as NewShortLink);
-      }
+      this.$emit('submit', this.data);
     },
 
     handleClose() {

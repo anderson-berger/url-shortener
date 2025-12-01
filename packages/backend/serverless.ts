@@ -89,13 +89,13 @@ const serverlessConfiguration: AWS = {
         },
         {
           httpApi: {
-            path: "/api/links/{id}",
+            path: "/api/links",
             method: "put",
           },
         },
         {
           httpApi: {
-            path: "/api/links/{id}",
+            path: "/api/links",
             method: "delete",
           },
         },

@@ -40,13 +40,15 @@ class ShortLinkService {
     return data;
   }
 
-  async update(id: string, updates: Partial<ShortLink>): Promise<ShortLink> {
-    const { data } = await api.put<ShortLink>(`/links/${id}`, updates);
+  async update(shortLink: ShortLink): Promise<ShortLink> {
+    const { data } = await api.put<ShortLink>(`/links`, shortLink);
     return data;
   }
 
-  async delete(id: string): Promise<void> {
-    await api.delete(`/links/${id}`);
+  async delete(shortLink: ShortLink): Promise<void> {
+    await api.delete(`/links`, {
+      data: shortLink,
+    });
   }
 }
 

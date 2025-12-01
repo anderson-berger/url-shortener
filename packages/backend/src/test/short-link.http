@@ -13,11 +13,11 @@ Content-Type: application/json
 }
 
 ### GetById
-GET {{api_local}}/api/links/df0eba0f-ed1a-40d7-bcd5-f9958aeac9b8
+GET {{api_local}}/api/links/e0612710-106e-4372-afff-f3b5450f6dc9
 Content-Type: application/json  
 
-### List - com limit customizado
-GET {{api_local}}/api/links?limit=2&nextToken=eyJzayI6Ik1FVEFEQVRBIiwiZ3NpMnBrIjoiTElOSyIsInBrIjoiTElOSyM1YmM1MTcwMS03NmM0LTQ3Y2QtOWIzYi01ODAxZWVjOTNmZjQiLCJnc2kyc2siOiIyMDI1LTExLTI1VDAyOjQwOjA2LjA3MVoifQ==
+### List - com limit customizado ?limit=2&nextToken=ey
+GET {{api_local}}/api/links?limit=4
 Content-Type: application/json
 
 ### Criar link sem título (local)

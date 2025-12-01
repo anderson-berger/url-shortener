@@ -1,15 +1,14 @@
 import type { ShortLink, NewShortLink } from 'src/schemas/ShortLink.Schemas';
 import { ref, readonly } from 'vue';
 import shortLinkService from 'src/services/ShortLink.Service';
-import { loadingManager } from 'src/boot/loading';
+import { loadingManager } from 'src/plugins/loading';
+
+const _links = ref<ShortLink[]>([]);
 
 export function useLinks() {
-  // Estado privado (interno)
-  const _links = ref<ShortLink[]>([]);
-
   const links = readonly(_links);
 
-  async function createLink(newShortLink: NewShortLink) {
+  async function createShortLink(newShortLink: NewShortLink) {
     return loadingManager.execute('create-link', async () => {
       const link = await shortLinkService.create(newShortLink);
       _links.value.push(link);
@@ -18,33 +17,37 @@ export function useLinks() {
   }
 
   async function fetchLinks() {
-    return loadingManager.execute('list-link', async () => {
+    return loadingManager.execute('fetch-links', async () => {
       const fetchedLinks = await shortLinkService.getAll();
       _links.value = fetchedLinks;
       return fetchedLinks;
     });
   }
 
-  // async function deleteLink(linkId: string) {
-  //   return loadingManager.execute('links.deleteLink', async () => {
-  //     await shortLinkService.delete(linkId);
-  //     _links.value = _links.value.filter(link => link.id !== linkId);
-  //   });
-  // }
+  async function deleteLink(shortLink: ShortLink) {
+    return loadingManager.execute(`delete-link-${shortLink.id}`, async () => {
+      await shortLinkService.delete(shortLink);
+      _links.value = _links.value.filter((link) => link.id !== shortLink.id);
+    });
+  }
 
-  // async function updateLink(linkId: string, updates: Partial<ShortLink>) {
-  //   return loadingManager.execute('links.updateLink', async () => {
-  //     const updated = await shortLinkService.update(linkId, updates);
-  //     const index = _links.value.findIndex(link => link.id === linkId);
-  //     if (index !== -1) {
-  //       _links.value[index] = updated;
-  //     }
-  //     return updated;
-  //   });
-  // }
+  async function updateShortLink(shortLink: ShortLink) {
+    return loadingManager.execute(`update-link`, async () => {
+      const updated = await shortLinkService.update(shortLink);
+      const index = _links.value.findIndex((link) => link.id === shortLink.id);
+      if (index !== -1) {
+        _links.value[index] = updated;
+      }
+      return updated;
+    });
+  }
 
   function clearLinks() {
     _links.value = [];
+  }
+
+  function getLinkById(linkId: string) {
+    return _links.value.find((link) => link.id === linkId);
   }
 
   return {
@@ -52,10 +55,11 @@ export function useLinks() {
     links,
 
     // Métodos
-    createLink,
+    createShortLink,
     fetchLinks,
-    // deleteLink,
-    // updateLink,
+    deleteLink,
+    updateShortLink,
     clearLinks,
+    getLinkById,
   };
 }

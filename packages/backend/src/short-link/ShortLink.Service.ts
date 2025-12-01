@@ -7,6 +7,7 @@ import {
   Pagination,
   ShortLink,
 } from "@/short-link/ShortLink.Schemas";
+import { ConflictError, NotFoundError } from "@/utils/error/errors";
 
 export class ShortLinkService {
   private shortLinkRepository: ShortLinkRepository;
@@ -33,10 +34,30 @@ export class ShortLinkService {
     return shortLink;
   }
 
+  async update(shortLink: ShortLink): Promise<ShortLink> {
+    const original = await this.getById(shortLink.id);
+
+    if (original.version !== shortLink.version) {
+      throw new ConflictError(
+        "The link was modified by another process. Please refresh and try again."
+      );
+    }
+
+    const updatedShortLink: ShortLink = {
+      ...shortLink,
+      version: original.version + 1,
+      updatedAt: dayjs().toISOString(),
+    };
+
+    await this.shortLinkRepository.update(updatedShortLink);
+
+    return updatedShortLink;
+  }
+
   async getById(id: ShortLink["id"]) {
     const shortlink = await this.shortLinkRepository.getById(id);
     if (!shortlink) {
-      throw new Error("Link not found");
+      throw new NotFoundError("Link not found");
     }
     return shortlink;
   }
@@ -46,10 +67,21 @@ export class ShortLinkService {
     return links;
   }
 
+  async delete(shortLink: ShortLink) {
+    const original = await this.getById(shortLink.id);
+
+    if (original.version !== shortLink.version) {
+      throw new ConflictError(
+        "The link was modified by another process. Please refresh and try again."
+      );
+    }
+    await this.shortLinkRepository.delete(shortLink);
+  }
+
   async redirect(shortCode: ShortLink["shortCode"]) {
     const link = await this.shortLinkRepository.getByShortCode(shortCode);
     if (!link) {
-      throw new Error("Link not found");
+      throw new NotFoundError("Link not found");
     }
     return link.originalUrl;
   }
