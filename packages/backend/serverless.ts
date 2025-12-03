@@ -16,7 +16,29 @@ const serverlessConfiguration: AWS = {
       STAGE: "${opt:stage, 'local'}",
       TABLE: "${self:service}-${opt:stage, 'local'}",
     },
-
+    httpApi: {
+      cors: {
+        allowedOrigins: ["http://localhost:9000"],
+        allowedHeaders: [
+          "Content-Type",
+          "Authorization",
+          "X-Requested-With",
+          "Accept",
+          "Origin",
+        ],
+        allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowCredentials: true,
+        maxAge: 300,
+      },
+      authorizers: {
+        authLambda: {
+          type: "request",
+          functionName: "authorizer",
+          identitySource: ["$request.header.Authorization"],
+          enableSimpleResponses: false,
+        },
+      },
+    },
     iam: {
       role: {
         statements: [
@@ -39,7 +61,6 @@ const serverlessConfiguration: AWS = {
               "dynamodb:Query",
             ],
             Resource: [
-              // evitar self:provider.environment.TABLE aqui também — usar opt:stage
               "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${opt:stage, 'local'}",
               "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${opt:stage, 'local'}/index/*",
             ],
@@ -55,17 +76,35 @@ const serverlessConfiguration: AWS = {
   },
 
   functions: {
-    "health-check": {
-      handler: "src/health-check/handler.handler",
+    authorizer: {
+      handler: "src/utils/jwt/jwt.authorize",
+      description: "JWT authorizer for HTTP API",
+    },
+    register: {
+      handler: "src/register/handler.handler",
+      description: "User registration endpoint",
       events: [
         {
           httpApi: {
-            path: "/api/health",
-            method: "get",
+            path: "/api/register",
+            method: "post",
           },
         },
       ],
     },
+    login: {
+      handler: "src/login/handler.handler",
+      description: "User login endpoint",
+      events: [
+        {
+          httpApi: {
+            path: "/api/login",
+            method: "post",
+          },
+        },
+      ],
+    },
+
     "short-link": {
       handler: "src/short-link/handler.handler",
       events: [
@@ -108,6 +147,18 @@ const serverlessConfiguration: AWS = {
           httpApi: {
             path: "/{shortCode}",
             method: "get",
+          },
+        },
+      ],
+    },
+    "health-check": {
+      handler: "src/health-check/handler.handler",
+      events: [
+        {
+          httpApi: {
+            path: "/api/health",
+            method: "get",
+            authorizer: { name: "authLambda" },
           },
         },
       ],

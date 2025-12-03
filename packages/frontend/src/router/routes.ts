@@ -1,8 +1,15 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
+  // Login na raiz
   {
     path: '/',
+    component: () => import('pages/AuthPage.vue'),
+  },
+
+  // Área autenticada
+  {
+    path: '/app',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
@@ -10,8 +17,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/MenuPage.vue'),
       },
       {
-        path: '/health',
-        name: 'health',
+        path: 'health',
         component: () => import('pages/HealthCheckPage.vue'),
       },
     ],

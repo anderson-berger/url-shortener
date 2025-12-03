@@ -1,0 +1,13 @@
+@api_local = http://localhost:3000
+@api_dev =  https://v5zcdnldv9.execute-api.sa-east-1.amazonaws.com
+
+
+### login
+POST {{api_local}}/api/login
+Content-Type: application/json
+
+{
+  "email": "anderson_bg23@outlook.com",
+  "password": "111111"
+
+}

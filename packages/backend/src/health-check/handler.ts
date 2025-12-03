@@ -2,6 +2,7 @@ import { apiSuccess } from "@/utils/response/response";
 import type { APIGatewayProxyHandler } from "aws-lambda";
 
 export const handler: APIGatewayProxyHandler = async () => {
+  console.log("ao menos bateu aqui?");
   return apiSuccess({
     status: "healthy",
     service: "url-shortener",

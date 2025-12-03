@@ -6,9 +6,9 @@
     </q-header>
 
     <!-- Sidebar -->
-    <q-drawer v-model="leftDrawer" show-if-above bordered class="bg-grey-1" :width="260">
+    <!-- <q-drawer v-model="leftDrawer" show-if-above bordered class="bg-grey-1" :width="260">
       <MainSidebar />
-    </q-drawer>
+    </q-drawer> -->
 
     <!-- Main Content -->
     <q-page-container>
@@ -20,12 +20,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MainHeader from '../layouts/main-layout/MainHeader.vue';
-import MainSidebar from '../layouts/main-layout/MainSidebar.vue';
+// import MainSidebar from '../layouts/main-layout/MainSidebar.vue';
 
 export default defineComponent({
   name: 'MainLayout',
 
-  components: { MainHeader, MainSidebar },
+  components: { MainHeader },
 
   props: {},
 

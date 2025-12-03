@@ -22,7 +22,7 @@
             <q-card flat bordered>
               <q-card-section class="row items-center">
                 <q-icon name="link" size="16px" class="q-mr-xs" />
-                <span class="text-weight-bold">{{ link.title || 'Sem título' }}</span>
+                <span class="text-weight-bold">{{ 'Sem título' }}</span>
                 <q-space></q-space>
                 <q-btn
                   flat
@@ -132,7 +132,6 @@ export default defineComponent({
       const searchLower = this.search.toLowerCase();
       return this.links.filter(
         (link) =>
-          link.title?.toLowerCase().includes(searchLower) ||
           link.originalUrl.toLowerCase().includes(searchLower) ||
           link.shortCode.toLowerCase().includes(searchLower),
       );

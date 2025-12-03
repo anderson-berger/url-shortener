@@ -1,7 +1,7 @@
 <template>
   <q-toolbar>
     <q-toolbar-title class="row items-center">
-      <q-btn flat dense round icon="menu" @click="$emit('toggle-drawer')" />
+      <!-- <q-btn flat dense round icon="menu" @click="$emit('toggle-drawer')" /> -->
     </q-toolbar-title>
   </q-toolbar>
 </template>

@@ -1,5 +1,5 @@
 import type { NewShortLink, ShortLink } from 'src/schemas/ShortLink.Schemas';
-import api from './api';
+import api from 'src/services/api';
 
 class ShortLinkService {
   async create(newShortLink: NewShortLink): Promise<ShortLink> {

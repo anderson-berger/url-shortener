@@ -4,7 +4,7 @@
       <q-item
         clickable
         v-ripple
-        :active="$route.name === 'health'"
+        :active="isActive('health')"
         @click="$router.push({ name: 'health' })"
         active-class="bg-primary text-white"
       >
@@ -19,7 +19,7 @@
       <q-item
         clickable
         v-ripple
-        :active="$route.name === 'home'"
+        :active="isActive('link')"
         @click="$router.push({ name: 'link' })"
         active-class="bg-primary text-white"
       >
@@ -40,23 +40,17 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'MainSidebar',
 
-  components: {},
-
-  props: {},
-
-  emits: [],
-
-  data() {
-    return {};
+  computed: {
+    currentRoute() {
+      return this.$route.name;
+    },
   },
 
-  computed: {},
-
-  methods: {},
-
-  created() {},
-
-  mounted() {},
+  methods: {
+    isActive(routeName: string): boolean {
+      return this.$route.name === routeName;
+    },
+  },
 });
 </script>
 
