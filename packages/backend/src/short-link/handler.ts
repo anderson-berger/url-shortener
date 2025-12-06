@@ -1,21 +1,33 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda";
+// src/short-link/ShortLink.Handler.ts
+import { APIGatewayProxyResult } from "aws-lambda";
 import {
   $newShortLink,
   $pagination,
   $shortLink,
 } from "@/short-link/ShortLink.Schemas";
-import { apiSuccess, apiError, apiRedirect } from "@/utils/response/response";
+import { apiSuccess, apiError } from "@/utils/response/response";
 import { ShortLinkService } from "@/short-link/ShortLink.Service";
-import { BadRequestError } from "@/utils/error/errors";
+import { BadRequestError, UnauthorizedError } from "@/utils/error/errors";
+import { AuthorizedAPIGatewayProxyEventV2 } from "@/utils/schemas/api-gateway.schemas";
 
 const shortLinkService = new ShortLinkService();
 
+function getUserIdFromEvent(event: AuthorizedAPIGatewayProxyEventV2): string {
+  const userId = event.requestContext.authorizer?.lambda?.userId;
+
+  if (!userId) {
+    throw new UnauthorizedError("User not authenticated");
+  }
+
+  return userId;
+}
+
 export async function handler(
-  event: APIGatewayProxyEventV2
+  event: AuthorizedAPIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResult> {
   try {
     const method = event.requestContext.http.method;
-    console.log(method);
+
     switch (method) {
       case "POST":
         return await create(event);
@@ -25,7 +37,6 @@ export async function handler(
         return await get(event);
       case "DELETE":
         return await remove(event);
-
       default:
         throw new BadRequestError("Método HTTP não suportado");
     }
@@ -34,51 +45,57 @@ export async function handler(
   }
 }
 
-async function create(event: APIGatewayProxyEventV2) {
+async function create(event: AuthorizedAPIGatewayProxyEventV2) {
   try {
+    const userId = getUserIdFromEvent(event);
     const body = JSON.parse(event.body || "{}");
     const newShortLink = $newShortLink.parse(body);
-    const shortLink = await shortLinkService.create(newShortLink);
+
+    const shortLink = await shortLinkService.create(newShortLink, userId);
     return apiSuccess(shortLink, 201);
   } catch (error) {
     return apiError(error);
   }
 }
 
-async function update(event: APIGatewayProxyEventV2) {
+async function update(event: AuthorizedAPIGatewayProxyEventV2) {
   try {
+    const userId = getUserIdFromEvent(event);
     const body = JSON.parse(event.body || "{}");
     const shortLink = $shortLink.parse(body);
 
-    const result = await shortLinkService.update(shortLink);
+    const result = await shortLinkService.update(shortLink, userId);
     return apiSuccess(result, 201);
   } catch (error) {
     return apiError(error);
   }
 }
 
-async function get(event: APIGatewayProxyEventV2) {
+async function get(event: AuthorizedAPIGatewayProxyEventV2) {
   try {
+    const userId = getUserIdFromEvent(event);
     const id = event.pathParameters?.id;
-    // Se tem ID, busca um link específico
+
     if (id) {
-      const shortLink = await shortLinkService.getById(id);
+      const shortLink = await shortLinkService.getById(id, userId);
       return apiSuccess(shortLink);
     }
 
     const pagination = $pagination.parse(event.queryStringParameters || {});
-    const result = await shortLinkService.list(pagination);
+    const result = await shortLinkService.list(pagination, userId);
     return apiSuccess(result);
   } catch (error) {
     return apiError(error);
   }
 }
 
-async function remove(event: APIGatewayProxyEventV2) {
+async function remove(event: AuthorizedAPIGatewayProxyEventV2) {
   try {
+    const userId = getUserIdFromEvent(event);
     const body = JSON.parse(event.body || "{}");
     const shortLink = $shortLink.parse(body);
-    await shortLinkService.delete(shortLink);
+
+    await shortLinkService.delete(shortLink, userId);
     return apiSuccess({ message: "Link deleted successfully" }, 200);
   } catch (error) {
     return apiError(error);

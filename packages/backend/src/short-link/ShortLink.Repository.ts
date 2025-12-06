@@ -1,3 +1,4 @@
+// src/short-link/ShortLink.Repository.ts
 import { docClient } from "@/config/dynamodb";
 import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import {
@@ -9,16 +10,16 @@ import {
 const TABLE = process.env.TABLE!;
 
 export class ShortLinkRepository {
-  constructor() {}
-
   async save(shortLink: ShortLink) {
     const item = {
       pk: `LINK#${shortLink.id}`,
       sk: "METADATA",
       gsi1pk: `SHORTCODE#${shortLink.shortCode}`,
       gsi1sk: "LINK",
-      gsi2pk: "LINK", // Partition key fixo para listagem
-      gsi2sk: shortLink.createdAt, // Sort key para ordenação por data
+      gsi2pk: "LINK",
+      gsi2sk: shortLink.createdAt,
+      gsi3pk: `USER#${shortLink.userId}`, // Novo GSI para filtrar por usuário
+      gsi3sk: shortLink.createdAt,
       ...shortLink,
     };
 
@@ -41,6 +42,8 @@ export class ShortLinkRepository {
       gsi1sk: "LINK",
       gsi2pk: "LINK",
       gsi2sk: shortLink.createdAt,
+      gsi3pk: `USER#${shortLink.userId}`,
+      gsi3sk: shortLink.createdAt,
       ...shortLink,
     };
 
@@ -82,14 +85,14 @@ export class ShortLinkRepository {
     return shortLink;
   }
 
-  async list(pagination: Pagination) {
+  async list(pagination: Pagination, userId: string) {
     const result = await docClient.send(
       new QueryCommand({
         TableName: TABLE,
-        IndexName: "GSI2",
-        KeyConditionExpression: "gsi2pk = :gsi2pk",
+        IndexName: "GSI3", // Usa GSI3 para filtrar por usuário
+        KeyConditionExpression: "gsi3pk = :gsi3pk",
         ExpressionAttributeValues: {
-          ":gsi2pk": "LINK",
+          ":gsi3pk": `USER#${userId}`,
         },
         Limit: pagination.limit,
         ExclusiveStartKey: pagination.nextToken

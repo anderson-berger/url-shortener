@@ -112,30 +112,37 @@ const serverlessConfiguration: AWS = {
           httpApi: {
             path: "/api/links",
             method: "post",
+            authorizer: { name: "authLambda" },
           },
         },
         {
           httpApi: {
             path: "/api/links",
             method: "get",
+            authorizer: {
+              name: "authLambda",
+            },
           },
         },
         {
           httpApi: {
             path: "/api/links/{id}",
             method: "get",
+            authorizer: { name: "authLambda" },
           },
         },
         {
           httpApi: {
             path: "/api/links",
             method: "put",
+            authorizer: { name: "authLambda" },
           },
         },
         {
           httpApi: {
             path: "/api/links",
             method: "delete",
+            authorizer: { name: "authLambda" },
           },
         },
       ],
@@ -145,7 +152,7 @@ const serverlessConfiguration: AWS = {
       events: [
         {
           httpApi: {
-            path: "/{shortCode}",
+            path: "/go/{shortCode}",
             method: "get",
           },
         },

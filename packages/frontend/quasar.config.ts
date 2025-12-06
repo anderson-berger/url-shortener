@@ -85,6 +85,10 @@ export default defineConfig((/* ctx */) => {
           target: 'http://localhost:3000', // ← Serverless offline
           changeOrigin: true,
         },
+        '/go': {
+          target: 'http://localhost:3000', // ← Serverless offline
+          changeOrigin: true,
+        },
       },
     },
 

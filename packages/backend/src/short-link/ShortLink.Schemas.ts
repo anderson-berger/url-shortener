@@ -1,8 +1,10 @@
+import { $user } from "@/user/User.Schemas";
 import { z } from "zod";
 
 export const $shortLink = z.object({
   id: z.uuid(),
   version: z.number().default(1),
+  userId: $user.shape.id,
   shortCode: z.string().length(6),
   originalUrl: z.url(),
   createdAt: z.iso.datetime(),
@@ -12,6 +14,7 @@ export const $shortLink = z.object({
 export const $newShortLink = $shortLink.omit({
   id: true,
   version: true,
+  userId: true,
   shortCode: true,
   createdAt: true,
   updatedAt: true,

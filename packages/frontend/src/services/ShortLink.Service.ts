@@ -3,7 +3,7 @@ import api from 'src/services/api';
 
 class ShortLinkService {
   async create(newShortLink: NewShortLink): Promise<ShortLink> {
-    const { data } = await api.post<ShortLink>('/links', newShortLink);
+    const { data } = await api.post<ShortLink>('/api/links', newShortLink);
     return data;
   }
 
@@ -36,17 +36,17 @@ class ShortLinkService {
   }
 
   async getById(id: string): Promise<ShortLink> {
-    const { data } = await api.get<ShortLink>(`/links/${id}`);
+    const { data } = await api.get<ShortLink>(`/go/links/${id}`);
     return data;
   }
 
   async update(shortLink: ShortLink): Promise<ShortLink> {
-    const { data } = await api.put<ShortLink>(`/links`, shortLink);
+    const { data } = await api.put<ShortLink>(`/go/links`, shortLink);
     return data;
   }
 
   async delete(shortLink: ShortLink): Promise<void> {
-    await api.delete(`/links`, {
+    await api.delete(`/go/links`, {
       data: shortLink,
     });
   }
