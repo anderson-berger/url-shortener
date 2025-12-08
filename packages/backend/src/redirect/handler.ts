@@ -30,10 +30,8 @@ async function get(event: APIGatewayProxyEventV2) {
     if (!shortCode) {
       throw new BadRequestError("Short code not provided");
     }
-
     const result = await shortLinkService.redirect(shortCode);
-    console.log("result", result);
-    return apiSuccess(result);
+
     return apiRedirect(result);
   } catch (error) {
     return apiError(error);

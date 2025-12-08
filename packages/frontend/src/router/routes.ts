@@ -6,10 +6,6 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('pages/AuthPage.vue'),
   },
-  {
-    path: '/:shortCode',
-    component: () => import('pages/RedirectPage.vue'),
-  },
 
   // Área autenticada
   {

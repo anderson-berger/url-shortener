@@ -21,21 +21,15 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  // ✅ Guard de Autenticação
   Router.beforeEach((to, from, next) => {
     const auth = localStorage.getItem('auth');
     const isAuthenticated = !!auth;
 
-    // Rotas que começam com /app requerem autenticação
     if (to.path.startsWith('/app') && !isAuthenticated) {
       next('/');
-    }
-    // Já está autenticado tentando acessar login
-    else if (to.path === '/' && isAuthenticated) {
+    } else if (to.path === '/' && isAuthenticated) {
       next('/app');
-    }
-    // Permitir acesso
-    else {
+    } else {
       next();
     }
   });

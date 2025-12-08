@@ -60,7 +60,7 @@ export default defineComponent({
           message: `API: ${response.status} - ${response.service} v${response.version}`,
           position: 'top',
         });
-      } catch (error) {
+      } catch {
         this.$q.notify({
           type: 'negative',
           message: 'Erro ao verificar API',

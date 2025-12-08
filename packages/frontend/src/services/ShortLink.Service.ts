@@ -21,13 +21,13 @@ class ShortLinkService {
       const { data } = await api.get<{
         items: ShortLink[];
         nextToken?: string;
-      }>('/links', {
+      }>('/api/links', {
         params: {
           limit: 100,
           nextToken,
         },
       });
-
+      console.log('data', data);
       allLinks.push(...data.items);
       nextToken = data.nextToken;
     } while (nextToken);
@@ -36,17 +36,17 @@ class ShortLinkService {
   }
 
   async getById(id: string): Promise<ShortLink> {
-    const { data } = await api.get<ShortLink>(`/go/links/${id}`);
+    const { data } = await api.get<ShortLink>(`/api/links/${id}`);
     return data;
   }
 
   async update(shortLink: ShortLink): Promise<ShortLink> {
-    const { data } = await api.put<ShortLink>(`/go/links`, shortLink);
+    const { data } = await api.put<ShortLink>(`/api/links`, shortLink);
     return data;
   }
 
   async delete(shortLink: ShortLink): Promise<void> {
-    await api.delete(`/go/links`, {
+    await api.delete(`/api/links`, {
       data: shortLink,
     });
   }

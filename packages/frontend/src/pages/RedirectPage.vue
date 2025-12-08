@@ -14,46 +14,52 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { Notify } from 'quasar';
+<script lang="ts">
+import { defineComponent } from 'vue';
 import RedirectService from 'src/services/Redirect.Service';
 
-const route = useRoute();
-const router = useRouter();
-const error = ref<string>('');
+export default defineComponent({
+  name: 'RedirectPage',
 
-onMounted(async () => {
-  const shortCode = route.params.shortCode as string;
+  data() {
+    return {
+      error: '',
+    };
+  },
 
-  if (!shortCode) {
-    error.value = 'Invalid short code';
-    return;
-  }
+  async mounted() {
+    const shortCode = this.$route.params.shortCode as string;
 
-  try {
-    const url = await RedirectService.redirect(shortCode);
-
-    if (!url) {
-      throw new Error('URL not found');
+    if (!shortCode) {
+      this.error = 'Invalid short code';
+      return;
     }
 
-    // Redireciona para a URL
-    window.location.href = url;
-  } catch (err) {
-    console.error('Redirect error:', err);
-    error.value = err instanceof Error ? err.message : 'Failed to redirect';
+    try {
+      const url = await RedirectService.redirect(shortCode);
 
-    Notify.create({
-      type: 'negative',
-      message: error.value,
-      position: 'top',
-    });
-  }
+      if (!url) {
+        throw new Error('URL not found');
+      }
+
+      // Redireciona para a URL
+      window.location.href = url;
+    } catch (err) {
+      console.error('Redirect error:', err);
+      this.error = err instanceof Error ? err.message : 'Failed to redirect';
+
+      this.$q.notify({
+        type: 'negative',
+        message: this.error,
+        position: 'top',
+      });
+    }
+  },
+
+  methods: {
+    goHome() {
+      void this.$router.push('/');
+    },
+  },
 });
-
-const goHome = () => {
-  router.push('/');
-};
 </script>

@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MainHeader from '../layouts/main-layout/MainHeader.vue';
+import MainHeader from 'src/layouts/main-layout/MainHeader.vue';
 // import MainSidebar from '../layouts/main-layout/MainSidebar.vue';
 
 export default defineComponent({
