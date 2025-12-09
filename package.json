@@ -12,8 +12,12 @@
     "init:dynamodb": "npx tsx scripts/init-dynamodb.ts",
     "start:backend": "npm run start -w @shortener/backend",
     "start:frontend": "npm run dev -w @shortener/frontend",
+    "build:frontend": "npm run build -w @shortener/frontend",
     "deploy:backend:dev": "npm run deploy:dev -w @shortener/backend",
-    "install:all": "npm install",
+    "deploy:frontend:dev": "npm run deploy:dev -w @shortener/frontend",
+    "deploy:frontend:prod": "npm run deploy:prod -w @shortener/frontend",
+    "deploy:dev": "npm run deploy:backend:dev && npm run deploy:frontend:dev",
+    "deploy:prod": "npm run deploy:backend:prod && npm run deploy:frontend:prod",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist packages/*/.serverless"
   },
   "keywords": [

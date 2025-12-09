@@ -7,6 +7,9 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build": "quasar build",
+    "deploy:dev": "npm run build && aws s3 sync dist/spa s3://shortyurl-frontend-dev --delete && aws cloudfront create-invalidation --distribution-id E3FVGC6FK9HVX3 --paths '/*'",
+    "deploy:prod": "npm run build && aws s3 sync dist/spa s3://shortyurl-frontend-prod --delete && aws cloudfront create-invalidation --distribution-id ************ --paths '/*'",
     "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{ts,js,cjs,mjs,vue}\"",
     "format": "prettier --write \"**/*.{js,ts,vue,css,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",

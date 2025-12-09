@@ -5,7 +5,7 @@
   </q-dialog>
 
   <q-dialog v-model="showListDialog" :maximized="$q.screen.lt.md">
-    <ShortLinkList @edit="onOpenDialog" @delete="onDelete" />
+    <ShortLinkList @create="onOpenDialog" @edit="onOpenDialog" @delete="onDelete" />
   </q-dialog>
 
   <q-separator></q-separator>

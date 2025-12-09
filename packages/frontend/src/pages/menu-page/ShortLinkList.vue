@@ -75,7 +75,7 @@
           label="Criar Link"
           icon="add"
           class="q-mt-lg"
-          @click="$emit('create')"
+          @click="$emit('create', 'create')"
         />
       </div>
 
@@ -92,7 +92,7 @@
           <q-card-section class="row items-center q-pb-none">
             <div class="col">
               <div class="text-h6 text-weight-medium">
-                {{ link.title || 'Sem título' }}
+                {{ 'Sem título' }}
               </div>
             </div>
             <div class="col-auto">
@@ -155,7 +155,7 @@
             <q-space />
             <div class="col-auto">
               <q-chip dense size="sm" icon="visibility" color="primary" text-color="white">
-                {{ link.clicks || 0 }} {{ (link.clicks || 0) === 1 ? 'clique' : 'cliques' }}
+                {{ 0 ? 'clique' : 'cliques' }}
               </q-chip>
             </div>
           </q-card-section>
@@ -170,7 +170,7 @@ import type { ShortLink } from 'src/schemas/ShortLink.Schemas';
 import { defineComponent } from 'vue';
 import { useLinks } from 'src/composables/useLinks';
 import { loadingManager } from 'src/plugins/loading';
-import { copyToClipboard, Notify, Dialog } from 'quasar';
+import { copyToClipboard, Notify } from 'quasar';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -205,8 +205,7 @@ export default defineComponent({
       return this.links.filter(
         (link) =>
           link.originalUrl.toLowerCase().includes(searchLower) ||
-          link.shortCode.toLowerCase().includes(searchLower) ||
-          (link.title && link.title.toLowerCase().includes(searchLower)),
+          link.shortCode.toLowerCase().includes(searchLower),
       );
     },
 
@@ -215,7 +214,7 @@ export default defineComponent({
     },
 
     totalClicks(): number {
-      return this.links.reduce((total, link) => total + (link.clicks || 0), 0);
+      return 0;
     },
   },
 
@@ -247,23 +246,7 @@ export default defineComponent({
     },
 
     confirmDelete(link: ShortLink) {
-      Dialog.create({
-        title: 'Confirmar exclusão',
-        message: `Tem certeza que deseja excluir o link "${link.title || link.shortCode}"? Esta ação não pode ser desfeita.`,
-        cancel: {
-          label: 'Cancelar',
-          color: 'grey-7',
-          flat: true,
-        },
-        ok: {
-          label: 'Excluir',
-          color: 'negative',
-          unelevated: true,
-        },
-        persistent: true,
-      }).onOk(() => {
-        this.$emit('delete', link);
-      });
+      this.$emit('delete', link);
     },
 
     openLink(link: ShortLink) {

@@ -58,13 +58,13 @@ export default defineComponent({
           color: 'secondary',
           action: 'list' as MenuAction,
         },
-        {
-          title: 'Analytics',
-          description: 'Acompanhar estatísticas e desempenho',
-          icon: 'analytics',
-          color: 'positive',
-          action: 'analytics' as MenuAction,
-        },
+        // {
+        //   title: 'Analytics',
+        //   description: 'Acompanhar estatísticas e desempenho',
+        //   icon: 'analytics',
+        //   color: 'positive',
+        //   action: 'analytics' as MenuAction,
+        // },
       ],
     };
   },
