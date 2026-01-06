@@ -87,7 +87,6 @@ async function get(event: AuthorizedAPIGatewayProxyEventV2) {
 
     const pagination = $pagination.parse(event.queryStringParameters || {});
     const result = await shortLinkService.list(pagination, userId);
-    console.log("result", result);
 
     return apiSuccess(result);
   } catch (error) {

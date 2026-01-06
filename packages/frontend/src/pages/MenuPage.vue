@@ -4,7 +4,7 @@
     :isShortCodeAvailable="isShortCodeAvailable"
     @submit="handlerSubmit"
   ></ShortlinkForm>
-  <ShortlinksTable :items="shortlinks"></ShortlinksTable>
+  <ShortlinksList :items="shortlinks"></ShortlinksList>
   {{ shortlinks }}
 </template>
 
@@ -12,14 +12,14 @@
 import { defineComponent } from 'vue';
 import ShortlinkForm from 'src/pages/menu-page/ShortlinkForm.vue';
 
-import ShortlinksTable from 'src/pages/menu-page/ShortlinksTable.vue';
+import ShortlinksList from 'src/pages/menu-page/ShortlinksList.vue';
 import type { NewShortlink, Shortlink } from 'src/schemas/Shortlink.Schemas';
 import ShortlinkService from 'src/services/Shortlink.Service';
 
 export default defineComponent({
   name: 'MenuItemsPage',
 
-  components: { ShortlinksTable, ShortlinkForm },
+  components: { ShortlinksList, ShortlinkForm },
 
   data() {
     return {
