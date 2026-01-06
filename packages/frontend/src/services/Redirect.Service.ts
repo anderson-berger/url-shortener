@@ -1,10 +1,10 @@
 // src/services/Redirect.Service.ts
 import api from './api';
-import type { ShortLink } from 'src/schemas/ShortLink.Schemas';
+import type { Shortlink } from 'src/schemas/Shortlink.Schemas';
 
 class RedirectService {
-  async redirect(shortCode: ShortLink['shortCode']) {
-    const { data } = await api.get<string>(`/go/${shortCode}`, {
+  async redirect(shortCode: Shortlink['shortCode']) {
+    const { data } = await api.get<string>(`/${shortCode}`, {
       headers: {
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',

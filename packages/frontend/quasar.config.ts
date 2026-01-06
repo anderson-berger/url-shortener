@@ -85,10 +85,6 @@ export default defineConfig((/* ctx */) => {
           target: 'http://localhost:3000',
           changeOrigin: true,
         },
-        '/go': {
-          target: 'http://localhost:3000',
-          changeOrigin: true,
-        },
       },
     },
 

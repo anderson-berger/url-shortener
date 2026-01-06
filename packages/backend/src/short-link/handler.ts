@@ -73,15 +73,22 @@ async function update(event: AuthorizedAPIGatewayProxyEventV2) {
 async function get(event: AuthorizedAPIGatewayProxyEventV2) {
   try {
     const userId = getUserIdFromEvent(event);
-    const id = event.pathParameters?.id;
+    const { id, shortCode } = event.pathParameters || {};
 
     if (id) {
       const shortLink = await shortLinkService.getById(id, userId);
       return apiSuccess(shortLink);
     }
 
+    if (shortCode) {
+      const exist = await shortLinkService.isShortCodeAvailable(shortCode);
+      return apiSuccess(exist);
+    }
+
     const pagination = $pagination.parse(event.queryStringParameters || {});
     const result = await shortLinkService.list(pagination, userId);
+    console.log("result", result);
+
     return apiSuccess(result);
   } catch (error) {
     return apiError(error);

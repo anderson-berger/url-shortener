@@ -14,6 +14,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'main',
         component: () => import('pages/MenuPage.vue'),
       },
     ],

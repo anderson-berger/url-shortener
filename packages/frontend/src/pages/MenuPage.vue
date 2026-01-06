@@ -1,113 +1,91 @@
 <template>
-  <MenuItems @handler="onOpenDialog"></MenuItems>
-  <q-dialog v-model="showFormDialog">
-    <ShortLinkForm :item="shortLink" @submit="onSubmit"></ShortLinkForm>
-  </q-dialog>
-
-  <q-dialog v-model="showListDialog" :maximized="$q.screen.lt.md">
-    <ShortLinkList @create="onOpenDialog" @edit="onOpenDialog" @delete="onDelete" />
-  </q-dialog>
-
-  <q-separator></q-separator>
+  <ShortlinkForm
+    :item="shortlink"
+    :isShortCodeAvailable="isShortCodeAvailable"
+    @submit="handlerSubmit"
+  ></ShortlinkForm>
+  <ShortlinksTable :items="shortlinks"></ShortlinksTable>
+  {{ shortlinks }}
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MenuItems from 'src/pages/menu-page/MenuItems.vue';
-import ShortLinkForm from 'src/pages/menu-page/ShortLinkForm.vue';
-import type { NewShortLink, ShortLink } from 'src/schemas/ShortLink.Schemas';
-import ShortLinkList from 'src/pages/menu-page/ShortLinkList.vue';
-import { useLinks } from 'src/composables/useLinks';
+import ShortlinkForm from 'src/pages/menu-page/ShortlinkForm.vue';
+
+import ShortlinksTable from 'src/pages/menu-page/ShortlinksTable.vue';
+import type { NewShortlink, Shortlink } from 'src/schemas/Shortlink.Schemas';
+import ShortlinkService from 'src/services/Shortlink.Service';
 
 export default defineComponent({
   name: 'MenuItemsPage',
 
-  components: {
-    MenuItems,
-    ShortLinkForm,
-    ShortLinkList,
-  },
-
-  setup() {
-    const { fetchLinks, createShortLink, updateShortLink, deleteLink } = useLinks();
-
-    return {
-      fetchLinks,
-      createShortLink,
-      updateShortLink,
-      deleteLink,
-    };
-  },
+  components: { ShortlinksTable, ShortlinkForm },
 
   data() {
     return {
-      shortLink: { originalUrl: '' } as NewShortLink | ShortLink,
-      showFormDialog: false,
-      showListDialog: false,
-      showAnalyticsDialog: false,
+      shortlink: null as Shortlink | null,
+      shortlinks: [] as Shortlink[],
     };
   },
+  computed: {},
 
   methods: {
-    onOpenDialog(menu: string, shortLink?: ShortLink) {
-      switch (menu) {
-        case 'create': {
-          this.shortLink = { originalUrl: '' };
-          this.showFormDialog = true;
-          break;
-        }
-        case 'edit':
-          if (!shortLink) break;
-          this.shortLink = shortLink;
-          this.showFormDialog = true;
-          break;
-        case 'list':
-          this.showListDialog = true;
-          break;
-        case 'analytics':
-          this.showAnalyticsDialog = true;
-          break;
-        default:
-          console.warn('Ação de menu desconhecida:', menu);
-      }
-    },
-
-    onCloseDialog(menu: string) {
-      switch (menu) {
-        case 'create':
-        case 'edit':
-          this.showFormDialog = false;
-          break;
-        case 'list':
-          this.showListDialog = false;
-          break;
-        case 'analytics':
-          this.showAnalyticsDialog = false;
-          break;
-        default:
-          console.warn('Ação de menu desconhecida:', menu);
-      }
-    },
-
-    async onSubmit(item: NewShortLink | ShortLink) {
-      if ('id' in item) {
-        await this.updateShortLink(item);
+    async handlerSubmit(newShortlink: NewShortlink) {
+      if (this.shortlink) {
+        const shortlink = {
+          ...this.shortlink,
+          ...newShortlink,
+          shortCode: newShortlink.shortCode ?? this.shortlink.shortCode,
+        };
+        await this.updateShortlink(shortlink);
       } else {
-        await this.createShortLink(item);
+        await this.createShortlink(newShortlink);
       }
-      this.showFormDialog = false;
     },
-    async onDelete(shortLink: ShortLink) {
-      await this.deleteLink(shortLink);
+    async isShortCodeAvailable(shortCode: Shortlink['shortCode']): Promise<boolean> {
+      return this.$load.execute('check-short-code', async () => {
+        const shortlink = await ShortlinkService.isShortCodeAvailable(shortCode);
+        return shortlink;
+      });
     },
+    async createShortlink(newShortlink: NewShortlink) {
+      return this.$load.execute('create-shorlink', async () => {
+        const link = await ShortlinkService.create(newShortlink);
+        this.shortlinks.push(link);
+      });
+    },
+    async updateShortlink(shortLink: Shortlink) {
+      return this.$load.execute(`update-shorlink`, async () => {
+        const index = this.shortlinks.findIndex((sl) => sl.id === shortLink.id);
+        if (index === -1) return;
 
-    async syncAll() {
-      await this.fetchLinks();
+        const updated = await ShortlinkService.update(shortLink);
+        this.shortlinks[index] = updated;
+      });
+    },
+    async deleteLink(shortLink: Shortlink) {
+      return this.$load.execute(`delete-shorlink-${shortLink.id}`, async () => {
+        const index = this.shortlinks.findIndex((sl) => sl.id === shortLink.id);
+
+        if (index === -1) return;
+
+        await ShortlinkService.delete(shortLink);
+        this.shortlinks.splice(index, 1);
+      });
+    },
+    clearLinks() {
+      this.shortlinks = [];
+    },
+    async fetchLinks() {
+      return this.$load.execute('fetch-shorlinks', async () => {
+        const fetchedLinks = await ShortlinkService.getAll();
+        this.shortlinks = fetchedLinks;
+      });
     },
   },
 
   async created() {
-    await this.syncAll();
+    await this.fetchLinks();
   },
 });
 </script>

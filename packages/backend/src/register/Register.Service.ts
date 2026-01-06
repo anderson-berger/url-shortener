@@ -15,14 +15,12 @@ export class AuthService {
     const newUser: NewUser = {
       email: input.email,
     };
-    console.log("newUser", newUser);
     const user = await this.userService.create(newUser);
 
     const newCredential: NewCredential = {
       userId: user.id,
       password: input.password,
     };
-    console.log("newCredential", newCredential);
 
     await this.credentialService.create(newCredential);
   }

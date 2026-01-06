@@ -1,8 +1,9 @@
 <template>
   <q-toolbar class="bg-primary text-white">
     <q-toolbar-title class="row items-center q-ml-sm">
-      <q-icon name="link" size="sm" class="q-mr-sm" />
-      <span class="text-h6">ShortyURL</span>
+      <div @click="goToMain()" style="cursor: pointer">
+        <q-icon name="link" size="sm" class="q-mr-sm" /> <span class="text-h6">ShortyURL</span>
+      </div>
     </q-toolbar-title>
 
     <q-space />
@@ -52,6 +53,11 @@ export default defineComponent({
   },
 
   methods: {
+    async goToMain() {
+      await this.$router.push({
+        name: 'main',
+      });
+    },
     async checkHealth() {
       try {
         const response = await healthService.check();

@@ -5,6 +5,7 @@ export const $shortLink = z.object({
   id: z.uuid(),
   version: z.number().default(1),
   userId: $user.shape.id,
+  title: z.string().min(1).max(20),
   shortCode: z.string().length(6),
   originalUrl: z.url(),
   createdAt: z.iso.datetime(),
@@ -15,7 +16,6 @@ export const $newShortLink = $shortLink.omit({
   id: true,
   version: true,
   userId: true,
-  shortCode: true,
   createdAt: true,
   updatedAt: true,
 });

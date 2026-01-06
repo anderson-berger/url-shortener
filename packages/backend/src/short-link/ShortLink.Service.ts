@@ -24,17 +24,21 @@ export class ShortLinkService {
   async create(newShortLink: NewShortLink, userId: string): Promise<ShortLink> {
     const id = randomUUID();
     const now = dayjs().toISOString();
-    const shortCode = generateShortCode();
 
     const shortLink: ShortLink = {
       id,
       userId,
       version: 1,
-      shortCode,
       ...newShortLink,
       createdAt: now,
       updatedAt: now,
     };
+
+    const isAvailable = await this.isShortCodeAvailable(shortLink.shortCode);
+
+    if (!isAvailable) {
+      throw new ConflictError("Shortcode already exists");
+    }
 
     await this.shortLinkRepository.save(shortLink);
     return shortLink;
@@ -51,7 +55,7 @@ export class ShortLinkService {
 
     const updatedShortLink: ShortLink = {
       ...shortLink,
-      userId, // Garante que o userId não muda
+      userId, // Para garantir que o id não mude.
       version: original.version + 1,
       updatedAt: dayjs().toISOString(),
     };
@@ -75,10 +79,17 @@ export class ShortLinkService {
     return shortlink;
   }
 
+  async isShortCodeAvailable(
+    shortCode: ShortLink["shortCode"]
+  ): Promise<boolean> {
+    const exists =
+      await this.shortLinkRepository.isShortCodeAvailable(shortCode);
+
+    return exists;
+  }
+
   async list(pagination: Pagination, userId: string) {
-    console.log("chegou no list");
     const links = await this.shortLinkRepository.list(pagination, userId);
-    console.log("chegou no list");
 
     return links;
   }

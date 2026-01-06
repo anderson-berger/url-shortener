@@ -137,6 +137,25 @@ export class ShortLinkRepository {
     return shortLink;
   }
 
+  //Dá para usar o getByShortCode, mas prefiro ter uma separação clara de responsabilidade.
+  async isShortCodeAvailable(shortCode: string): Promise<boolean> {
+    const result = await docClient.send(
+      new QueryCommand({
+        TableName: TABLE,
+        IndexName: "GSI1",
+        KeyConditionExpression: "gsi1pk = :gsi1pk AND gsi1sk = :gsi1sk",
+        ExpressionAttributeValues: {
+          ":gsi1pk": `SHORTCODE#${shortCode}`,
+          ":gsi1sk": "LINK",
+        },
+        ProjectionExpression: "gsi1pk",
+        Limit: 1,
+      })
+    );
+
+    return !result.Items || result.Items.length === 0;
+  }
+
   async delete(shortLink: ShortLink): Promise<void> {
     await docClient.send(
       new DeleteCommand({
