@@ -3,7 +3,7 @@ import api from './api';
 
 class HealthService {
   async check(): Promise<HealthCheckResponse> {
-    const response = await api.get<HealthCheckResponse>('/api/health');
+    const response = await api.get<HealthCheckResponse>('/health');
 
     const validated = $healthCheckResponse.parse(response.data);
 

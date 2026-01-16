@@ -27,7 +27,7 @@ export default defineComponent({
     };
   },
 
-  async mounted() {
+  mounted() {
     const shortCode = this.$route.params.shortCode as string;
 
     if (!shortCode) {
@@ -36,16 +36,8 @@ export default defineComponent({
     }
 
     try {
-      const url = await RedirectService.redirect(shortCode);
-
-      if (!url) {
-        throw new Error('URL not found');
-      }
-
-      // Redireciona para a URL
-      window.location.href = url;
+      RedirectService.redirect(shortCode);
     } catch (err) {
-      console.error('Redirect error:', err);
       this.error = err instanceof Error ? err.message : 'Failed to redirect';
 
       this.$q.notify({
@@ -58,7 +50,7 @@ export default defineComponent({
 
   methods: {
     goHome() {
-      void this.$router.push('/');
+      void this.$router.push({ name: 'auth' });
     },
   },
 });

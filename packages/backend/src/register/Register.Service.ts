@@ -23,5 +23,7 @@ export class AuthService {
     };
 
     await this.credentialService.create(newCredential);
+
+    return user;
   }
 }

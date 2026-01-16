@@ -3,7 +3,7 @@ import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 
 const api: AxiosInstance = axios.create({
-  baseURL: '',
+  baseURL: '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ api.interceptors.response.use(
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
         localStorage.removeItem('auth');
-        window.location.href = '/login';
+        window.location.href = '/';
       }
       return Promise.reject(error);
     }

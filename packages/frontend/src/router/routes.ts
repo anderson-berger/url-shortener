@@ -4,6 +4,7 @@ const routes: RouteRecordRaw[] = [
   // Login na raiz
   {
     path: '/',
+    name: 'auth',
     component: () => import('pages/AuthPage.vue'),
   },
 
@@ -11,6 +12,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/app',
     component: () => import('layouts/MainLayout.vue'),
+    name: 'app',
     children: [
       {
         path: '',
@@ -20,8 +22,16 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Redirect shortlink (deve vir antes do catchAll)
+  {
+    path: '/:shortCode([a-zA-Z0-9_-]{6})',
+    name: 'redirect',
+    component: () => import('pages/RedirectPage.vue'),
+  },
+
   {
     path: '/:catchAll(.*)*',
+    name: 'not-found',
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ];

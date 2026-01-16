@@ -34,9 +34,9 @@ export class ShortLinkService {
       updatedAt: now,
     };
 
-    const isAvailable = await this.isShortCodeAvailable(shortLink.shortCode);
+    const shortlink = await this.getByShortCode(shortLink.shortCode);
 
-    if (!isAvailable) {
+    if (shortlink) {
       throw new ConflictError("Shortcode already exists");
     }
 
@@ -79,13 +79,12 @@ export class ShortLinkService {
     return shortlink;
   }
 
-  async isShortCodeAvailable(
+  async getByShortCode(
     shortCode: ShortLink["shortCode"]
-  ): Promise<boolean> {
-    const exists =
-      await this.shortLinkRepository.isShortCodeAvailable(shortCode);
+  ): Promise<ShortLink | undefined> {
+    const shortlink = await this.shortLinkRepository.getByShortCode(shortCode);
 
-    return exists;
+    return shortlink;
   }
 
   async list(pagination: Pagination, userId: string) {

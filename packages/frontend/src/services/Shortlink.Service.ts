@@ -1,9 +1,10 @@
+import axios from 'axios';
 import type { NewShortlink, Shortlink } from 'src/schemas/Shortlink.Schemas';
 import api from 'src/services/api';
 
 class ShortlinkService {
   async create(newShortlink: NewShortlink): Promise<Shortlink> {
-    const { data } = await api.post<Shortlink>('/api/links', newShortlink);
+    const { data } = await api.post<Shortlink>('/links', newShortlink);
     return data;
   }
 
@@ -21,7 +22,7 @@ class ShortlinkService {
       const { data } = await api.get<{
         items: Shortlink[];
         nextToken?: string;
-      }>('/api/links', {
+      }>('/links', {
         params: {
           limit: 100,
           nextToken,
@@ -36,24 +37,35 @@ class ShortlinkService {
   }
 
   async getById(id: string): Promise<Shortlink> {
-    const { data } = await api.get<Shortlink>(`/api/links/${id}`);
+    const { data } = await api.get<Shortlink>(`/links/${id}`);
     return data;
   }
 
   async update(shortLink: Shortlink): Promise<Shortlink> {
-    const { data } = await api.put<Shortlink>(`/api/links`, shortLink);
+    const { data } = await api.put<Shortlink>(`/links`, shortLink);
     return data;
   }
 
   async delete(shortLink: Shortlink): Promise<void> {
-    await api.delete(`/api/links`, {
+    await api.delete(`/links`, {
       data: shortLink,
     });
   }
 
-  async isShortCodeAvailable(shortCode: Shortlink['shortCode']) {
-    const { data } = await api.get(`/api/links/code/${shortCode}`);
-    return data;
+  async getByShortcode(shortCode: string): Promise<Shortlink | undefined> {
+    try {
+      const { data } = await api.get<Shortlink>(`/links/code/${shortCode}`);
+      return data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          return undefined;
+        }
+        throw new Error(`Falha ao verificar shortcode: ${err.message}`);
+      }
+
+      throw err;
+    }
   }
 }
 

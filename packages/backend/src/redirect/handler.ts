@@ -1,5 +1,5 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2 } from "aws-lambda";
-import { apiError, apiRedirect, apiSuccess } from "@/utils/response/response";
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
+import { apiError, apiRedirect } from "@/utils/response/response";
 import { ShortLinkService } from "@/short-link/ShortLink.Service";
 import { BadRequestError } from "@/utils/error/errors";
 
@@ -26,7 +26,6 @@ export async function handler(
 async function get(event: APIGatewayProxyEventV2) {
   try {
     const shortCode = event.pathParameters?.shortCode;
-
     if (!shortCode) {
       throw new BadRequestError("Short code not provided");
     }
