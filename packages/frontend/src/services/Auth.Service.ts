@@ -10,12 +10,12 @@ class AuthService {
   private readonly AUTH_KEY = 'auth';
 
   async register(input: RegisterRequest): Promise<RegisterResponse> {
-    const { data } = await api.post<RegisterResponse>('/api/register', input);
+    const { data } = await api.post<RegisterResponse>('/register', input);
     return data;
   }
 
   async login(input: LoginRequest): Promise<LoginResponse> {
-    const { data } = await api.post<LoginResponse>('/api/login', input);
+    const { data } = await api.post<LoginResponse>('/login', input);
     this.setAuth(data);
     return data;
   }

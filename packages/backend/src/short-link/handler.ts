@@ -7,7 +7,11 @@ import {
 } from "@/short-link/ShortLink.Schemas";
 import { apiSuccess, apiError } from "@/utils/response/response";
 import { ShortLinkService } from "@/short-link/ShortLink.Service";
-import { BadRequestError, UnauthorizedError } from "@/utils/error/errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "@/utils/error/errors";
 import { AuthorizedAPIGatewayProxyEventV2 } from "@/utils/schemas/api-gateway.schemas";
 
 const shortLinkService = new ShortLinkService();
@@ -81,8 +85,9 @@ async function get(event: AuthorizedAPIGatewayProxyEventV2) {
     }
 
     if (shortCode) {
-      const exist = await shortLinkService.isShortCodeAvailable(shortCode);
-      return apiSuccess(exist);
+      const shortlink = await shortLinkService.getByShortCode(shortCode);
+      if (!shortlink) throw new NotFoundError();
+      return apiSuccess(shortlink);
     }
 
     const pagination = $pagination.parse(event.queryStringParameters || {});

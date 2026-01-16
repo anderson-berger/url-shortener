@@ -1,11 +1,11 @@
 <template>
   <ShortlinkForm
-    :item="shortlink"
-    :isShortCodeAvailable="isShortCodeAvailable"
+    :editLink="shortlink"
+    :shortCodeIsValid="shortCodeIsValid"
+    @validateShortcode="validateShortcode"
     @submit="handlerSubmit"
   ></ShortlinkForm>
   <ShortlinksList :items="shortlinks"></ShortlinksList>
-  {{ shortlinks }}
 </template>
 
 <script lang="ts">
@@ -25,6 +25,7 @@ export default defineComponent({
     return {
       shortlink: null as Shortlink | null,
       shortlinks: [] as Shortlink[],
+      shortCodeIsValid: false,
     };
   },
   computed: {},
@@ -42,20 +43,20 @@ export default defineComponent({
         await this.createShortlink(newShortlink);
       }
     },
-    async isShortCodeAvailable(shortCode: Shortlink['shortCode']): Promise<boolean> {
-      return this.$load.execute('check-short-code', async () => {
-        const shortlink = await ShortlinkService.isShortCodeAvailable(shortCode);
-        return shortlink;
+    async validateShortcode(shortCode: Shortlink['shortCode']): Promise<void> {
+      await this.$load.execute('validate-shortcode', async () => {
+        const shortlink = await ShortlinkService.getByShortcode(shortCode);
+        this.shortCodeIsValid = !shortlink;
       });
     },
     async createShortlink(newShortlink: NewShortlink) {
-      return this.$load.execute('create-shorlink', async () => {
+      return this.$load.execute('create-shortlink', async () => {
         const link = await ShortlinkService.create(newShortlink);
         this.shortlinks.push(link);
       });
     },
     async updateShortlink(shortLink: Shortlink) {
-      return this.$load.execute(`update-shorlink`, async () => {
+      return this.$load.execute('update-shortlink', async () => {
         const index = this.shortlinks.findIndex((sl) => sl.id === shortLink.id);
         if (index === -1) return;
 
@@ -64,7 +65,7 @@ export default defineComponent({
       });
     },
     async deleteLink(shortLink: Shortlink) {
-      return this.$load.execute(`delete-shorlink-${shortLink.id}`, async () => {
+      return this.$load.execute(`delete-shortlink-${shortLink.id}`, async () => {
         const index = this.shortlinks.findIndex((sl) => sl.id === shortLink.id);
 
         if (index === -1) return;
@@ -77,7 +78,7 @@ export default defineComponent({
       this.shortlinks = [];
     },
     async fetchLinks() {
-      return this.$load.execute('fetch-shorlinks', async () => {
+      return this.$load.execute('fetch-shortlinks', async () => {
         const fetchedLinks = await ShortlinkService.getAll();
         this.shortlinks = fetchedLinks;
       });

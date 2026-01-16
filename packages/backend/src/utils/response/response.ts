@@ -1,5 +1,6 @@
 import type { APIGatewayProxyResult } from "aws-lambda";
 import { ZodError } from "zod";
+import { AppError } from "../error/errors";
 
 const corsHeaders = {
   "Content-Type": "application/json",
@@ -40,6 +41,16 @@ export const apiError = (error: unknown): APIGatewayProxyResult => {
           field: issue.path.join("."),
           message: issue.message,
         })),
+      }),
+    };
+  }
+  if (error instanceof AppError) {
+    return {
+      statusCode: error.statusCode,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        error: error.name,
+        message: error.message,
       }),
     };
   }

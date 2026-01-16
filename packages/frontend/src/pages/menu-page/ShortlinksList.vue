@@ -17,17 +17,12 @@
           <div class="row items-center justify-between no-wrap">
             <div class="col ellipsis">
               <div class="text-caption text-grey-7">{{ formatDate(item.createdAt) }}</div>
-              <div class="text-subtitle2 text-weight-medium q-mt-xs ellipsis">{{ item.title || 'Sem título' }}</div>
+              <div class="text-subtitle2 text-weight-medium q-mt-xs ellipsis">
+                {{ item.title || 'Sem título' }}
+              </div>
             </div>
             <div class="col-auto">
-              <q-btn
-                flat
-                round
-                dense
-                size="sm"
-                icon="more_vert"
-                color="grey-7"
-              >
+              <q-btn flat round dense size="sm" icon="more_vert" color="grey-7">
                 <q-menu>
                   <q-list dense style="min-width: 140px">
                     <q-item clickable v-close-popup @click="$emit('edit', item)">
